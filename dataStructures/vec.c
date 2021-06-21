@@ -23,19 +23,20 @@ typedef struct{
 	long *get;
 	int idx; 
 	int len;
-}vec;
+}Vec;
 
-void new_vec(vec *arr){
+Vec new_Vec(Vec *arr){
 	arr->get = (typeof(arr->get))calloc(1, sizeof(typeof(arr->get))); 
 	arr->len= 1;
 	arr->idx = 0;
+	return *arr;
 }
 
-int vec_size(vec *arr){
+int vec_size(Vec *arr){
 	return arr->idx;	
 }
 
-void vec_add(vec *arr, auto n){
+void vec_add(Vec *arr, auto n){
 	if(arr->idx+1==arr->len){
 		arr->get = (typeof(arr->get))realloc(arr->get, arr->len*2);
 		arr->len = arr->len*2;
@@ -44,10 +45,9 @@ void vec_add(vec *arr, auto n){
 }
 
 int main(){
-	vec arr;
-	vec arr2;
-	new_vec(&arr);
-	new_vec(&arr2);
+	Vec arr = new_Vec(&arr);
+	Vec arr2 = new_Vec(&arr2);
+	
 	printf("size: %d\n", vec_size(&arr));
 	vec_add(&arr,1);
 	vec_add(&arr,2);
