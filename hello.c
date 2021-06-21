@@ -1,9 +1,9 @@
 #include<stdio.h>
 #include<stdlib.h>
-#define String(s) char s[]
+#define String char *
 
 int main(){
-	String(s) = "Hello wordl";
+	String s= "Hello world";
 	printf("%s", s);
     return 0;
 }
