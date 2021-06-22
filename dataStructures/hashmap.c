@@ -1,14 +1,21 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
-const long MAP_SIZE = 10000001;
-typedef struct Hentry Hentry;
+const long MAP_SIZE = 10000000;
+typedef long long ll;
+// typedef struct Hentry Hentry;
 
-struct Hentry{
+typedef struct Hentry{
 	char* key;
-	char* val;
+	char* value;
 	Hentry* next;
 };
+// struct Hentry{
+// 	int key;
+// 	int val;
+// 	Hentry* next;
+// };
 
 typedef struct{
 	Hentry **arr;
@@ -37,8 +44,8 @@ HashMap new_HashMap(HashMap *map){
 //     return hash%MAP_SIZE;
 // }
 
-long hash(char *str){
-    long hash = 5381;
+ll hash(char *str){
+    ll hash = 5381;
     int c;
 
     while (c = *str++)
@@ -50,15 +57,15 @@ long hash(char *str){
 void map_add(HashMap *map, char *key, char *val){
 	Hentry e;
 	e.key = key;
-	e.val = val;
+	e.value = val;
 	e.next = NULL;
 
-	long hash_key;
+	ll hash_key;
 	hash_key = hash(key);
 
 	if(!map->arr[hash_key]){
 		map->arr[hash_key] = &e;
-		// printf("%s --%d-- %s\n", map->arr[hash_key]->key,hash_key, map->arr[hash_key]->val);
+		printf("%s --%lld-- %s\n", map->arr[hash_key]->key,hash_key, map->arr[hash_key]->value);
 	}
 	else{
 		Hentry* temp = map->arr[hash_key];
@@ -68,15 +75,15 @@ void map_add(HashMap *map, char *key, char *val){
 		temp->next = &e;
 	}
 }
-bool map_contains(HashMap *map, char *key){
-	long hash_key = hash(key);
+bool map_containsKey(HashMap *map, char *key){
+	ll hash_key = hash(key);
 	if(!map->arr[hash_key]){
 		return false;
 	}
 	Hentry* temp = map->arr[hash_key];
+	printf("%s --%lld-- %s\n", map->arr[hash_key]->key,hash_key, map->arr[hash_key]->value);
+	
 	while(temp && temp->key!=key){
-		// printf("%s -keys-- %s\n", temp->key, key);
-		printf("works");
 		temp = temp->next;
 	}
 	// printf("safe\n");
@@ -87,26 +94,25 @@ bool map_contains(HashMap *map, char *key){
 }
 
 char *map_get(HashMap *map, char *key){
-	long hash_key = hash(key);
+	ll hash_key = hash(key);
 	if(!map->arr[hash_key]){
 		return "";
 	}
 	Hentry* temp = map->arr[hash_key];
-	// printf("%s --%d-- %s\n", map->arr[hash_key]->key,hash_key, map->arr[hash_key]->val);
-	// while(temp && temp->key!=key){
-	// 	printf("collision..........\n");
-	// 	temp = temp->next;
-	// }
-	// if(!temp || temp->key!=key){
-	// 	return "";
-	// }
-	return temp->val;
+	// printf("%s --%lld-- %s\n", map->arr[hash_key]->key,hash_key, map->arr[hash_key]->val);
+	while(temp && temp->key!=key){
+		temp = temp->next;
+	}
+	if(!temp || temp->key!=key){
+		return "";
+	}
+	return temp->value;
 }
 
 int main(){
 	HashMap map = new_HashMap(&map);
 	map_add(&map, "123", "please no err");
-	printf("%s\n", map_contains(&map, "123")?"true":"false");
-	printf("%s", map_get(&map, "123"));
+	printf("%s\n", map_containsKey(&map, "123")?"true":"false");
+	// printf("%s", map_get(&map, "123"));
 	return 0;
 }

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-typedef long long lint;
+typedef long long ll;
 #define get(i) get[i]
 #define maxn 1000000
 #define String char *
@@ -15,7 +15,7 @@ char *nextLine()
 }
 long long nextInt()
 {
-    lint t;
+    ll t;
     scanf("%lld", &t);
     return t;
 }
@@ -25,8 +25,6 @@ double nextDouble()
     scanf("%lf", &t);
     return t;
 }
-
-//.......................................................//
 //...............ArrayList...............................//
 typedef struct
 {
@@ -35,6 +33,61 @@ typedef struct
     int len;
 } ArrayList;
 
+ll ArrayList_sort(ArrayList *arr,int s,int e)
+{
+    if(s>=e)
+    {
+        return 0;
+    }
+    int mid  = (s+e)/2;
+    ll inv1=ArrayList_sort(arr,s,mid);
+    ll inv2=ArrayList_sort(arr,mid+1,e);
+    ll temp=0;
+    ll arr2[e-s+1];
+    int po1=s,po2=mid+1,pos=0;
+    while(1)
+    {
+        if(po1 == mid+1 && po2 == e+1)
+            break;
+        if(po1 == mid+1)
+        {
+            for(int i = po2;i<=e;i++)
+            {
+                arr2[pos] = arr->get(i);
+                pos++;
+            }
+            break;
+        }
+        if(po2 == e+1)
+        {
+            for(int i=po1;i<=mid;i++)
+            {
+                arr2[pos] = arr->get(i);
+                pos++;
+            }
+            break;
+        }
+        if(arr->get(po1)<=arr->get(po2))
+        {
+            arr2[pos] = arr->get(po1);
+            po1++;
+            pos++;
+        }
+        else
+        {
+            arr2[pos] = arr->get(po2);
+            po2++;
+            pos++;
+            temp+= (mid-po1+1);
+        }
+    }
+    for(int i=0,j=s;j<=e;i++,j++)
+    {
+        arr->get(j) = arr2[i];
+    }
+
+    return inv1+inv2+temp;
+}
 int Lower_bound(ArrayList *arr, long long val, int s, int e)
 {
     while (s <= e)
@@ -75,28 +128,23 @@ void ArrayList_add(ArrayList *arr, int n)
 
 int main()
 {
-    ArrayList arr2 = new_ArrayList();
     ArrayList arr = new_ArrayList();
-    new_ArrayList(&arr);
-    new_ArrayList(&arr2);
-    printf("size: %d\n", arr.length);
-    ArrayList_add(&arr, 1);
-    ArrayList_add(&arr, 2);
-    ArrayList_add(&arr2, 3);
-    ArrayList_add(&arr2, 4);
-
-    printf("size: %d\n", arr.length);
+    // new_ArrayList(&arr);
+    int n = nextInt();
+    for(int i=0;i<n;i++)
+        ArrayList_add(&arr, nextInt());
     for (int i = 0; i < arr.length; i++)
     {
-        printf("arr: %lld", arr.get(i));
-        printf("arr2: %lld", arr2.get(i));
+        printf("%d ",arr.get(i));
     }
     printf("\n");
-    String s1 = nextLine();
-    int d = nextInt();
-    printf("d : %d\n", d);
-    printf("s1 : %s\n", s1);
-    String s2 = nextLine();
-    printf("s2 : %s\n", s2);
-    printf("s1 : %s\n", s1);
+
+    ll inv = ArrayList_sort(&arr,0,n-1);
+    for (int i = 0; i < arr.length; i++)
+    {
+        printf("%d ",arr.get(i));
+    }
+    printf("\n");
+    printf("Inversions : %lld",inv);
+
 }
