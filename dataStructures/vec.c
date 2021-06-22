@@ -2,7 +2,7 @@
 #include<stdlib.h>
 
 
-//...............ArrayList...............seg error................//
+//...............ArrayList...............................//
 #define get(i) get[i]
 typedef long long ll;
 typedef struct
@@ -11,6 +11,7 @@ typedef struct
     int length;
     int len;
 } ArrayList;
+
 
 ArrayList new_ArrayList()
 {
@@ -24,11 +25,11 @@ void ArrayList_pop(ArrayList *arr)
 {
     arr->length = arr->length - 1;
 }
-void ArrayList_add(ArrayList *arr, int n)
+void ArrayList_add(ArrayList *arr, ll n)
 {
     if (arr->length + 1 == arr->len)
     {
-        arr->get = (long long *)realloc(arr->get, arr->len * 2);
+        arr->get = (long long *)realloc(arr->get, sizeof(ll*)* arr->len * 2);
         arr->len = arr->len * 2;
     }
     arr->get[arr->length++] = n;
@@ -43,54 +44,83 @@ void ArrayList_rev(ArrayList *arr){
 	}
 }
 
-void ArrayList_merge(ArrayList *arr, int start, int end){
-	if(start==end){
-		return;
-	}
-	int mid = start+(end-start)/2;
-	ArrayList_merge(arr, start, mid);
-	ArrayList_merge(arr, mid+1, end);
+ll ArrayList_sort(ArrayList *arr,int s,int e)
+{
+    if(s>=e)
+    {
+        return 0;
+    }
+    int mid  = (s+e)/2;
+    ll inv1=ArrayList_sort(arr,s,mid);
+    ll inv2=ArrayList_sort(arr,mid+1,e);
+    ll temp=0;
+    ll arr2[e-s+1];
+    int po1=s,po2=mid+1,pos=0;
+    while(1)
+    {
+        if(po1 == mid+1 && po2 == e+1)
+            break;
+        if(po1 == mid+1)
+        {
+            for(int i = po2;i<=e;i++)
+            {
+                arr2[pos] = arr->get(i);
+                pos++;
+            }
+            break;
+        }
+        if(po2 == e+1)
+        {
+            for(int i=po1;i<=mid;i++)
+            {
+                arr2[pos] = arr->get(i);
+                pos++;
+            }
+            break;
+        }
+        if(arr->get(po1)<=arr->get(po2))
+        {
+            arr2[pos] = arr->get(po1);
+            po1++;
+            pos++;
+        }
+        else
+        {
+            arr2[pos] = arr->get(po2);
+            po2++;
+            pos++;
+            temp+= (mid-po1+1);
+        }
+    }
+    for(int i=0,j=s;j<=e;i++,j++)
+    {
+        arr->get(j) = arr2[i];
+    }
 
-	// Merge
-	int p1 = start;
-	int p2 = mid+1;
-	int cur = 0;
-
-	ll temp[end-start+1];
-	for(int i=0;i<end-start+1;i++){
-		temp[i] = 0;
-	}
-
-	while(p1<=mid && p2<=end){
-		if(arr->get[p1]<arr->get[p2]){
-			temp[cur++] = arr->get[p1];
-			p1++;
-		}
-		else{
-			temp[cur++] = arr->get[p2];
-			p2++;
-		}
-	}
-	while(p1<=mid){
-		temp[cur++] = arr->get[p1++];
-	}
-	while(p2<=end){
-		temp[cur++] = arr->get[p2++];
-	}
-
-	cur = 0;
-	for(int i=start;i<=end;i++){
-		arr->get[i] = temp[cur++];
-	}
+    return inv1+inv2+temp;
 }
 
-void ArrayList_sort(ArrayList *arr){
-	ArrayList_merge(arr, 0, arr->length-1);
+int ArrayList_upper(ArrayList *arr, long long val, int s, int e)
+{
+    while (s <= e)
+    {
+        int mid = (s + e) / 2;
+        if (arr->get(mid) == val)
+            return mid;
+        if (arr->get(mid) > val)
+            e = mid - 1;
+        else
+            s = mid + 1;
+    }
+    return e + 1;
 }
+
 //............................................................//
 
 int main(){
     ArrayList arr = new_ArrayList();
+    ArrayList_add(&arr, 10);
+    ArrayList_add(&arr, 10);
     ArrayList_add(&arr, 10);
     ArrayList_add(&arr, 2);
     ArrayList_add(&arr, 41);
@@ -104,12 +134,15 @@ int main(){
     printf("\n");
     printf("Sorted Array\n");
 
-	ArrayList_sort(&arr);
+	ArrayList_sort(&arr, 0, arr.length-1);
     for (int i = 0; i < arr.length; i++)
     {
         printf("%lld ", arr.get(i));
     }
     printf("\n");
+
+	printf("Upper Bound 11: %lld\n", arr.get(ArrayList_upper(&arr, 11, 0, arr.length-1)));
+
     printf("Reversed Array\n");
 
 	ArrayList_rev(&arr);
