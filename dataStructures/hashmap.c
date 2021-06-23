@@ -48,7 +48,7 @@ ll hash(char *str){
     return hash%MAP_SIZE;
 }
 
-void map_add(HashMap *map, char *key, char *val){
+void HashMap_add(HashMap *map, char *key, char *val){
 	Hentry* e = (Hentry*)malloc(sizeof(Hentry*));
 	e->key = key;
 	e->value = val;
@@ -68,7 +68,7 @@ void map_add(HashMap *map, char *key, char *val){
 		temp->next = e;
 	}
 }
-bool map_containsKey(HashMap *map, char *key){
+bool HashMap_containsKey(HashMap *map, char *key){
 	ll hash_key = hash(key);
 	if(!map->arr[hash_key]){
 		return false;
@@ -84,7 +84,7 @@ bool map_containsKey(HashMap *map, char *key){
 	return true;
 }
 
-char *map_get(HashMap *map, char *key){
+char *HashMap_get(HashMap *map, char *key){
 	ll hash_key = hash(key);
 	if(!map->arr[hash_key]){
 		return "";
@@ -99,14 +99,28 @@ char *map_get(HashMap *map, char *key){
 	return temp->value;
 }
 
+void HashMap_remove(HashMap *map, char* key)
+{
+	ll hash_key = hash(key);
+	
+	map->arr[hash_key] = NULL;
+}
+//======================================================================//
+
+
 int main(){
 	HashMap map = new_HashMap();
-	map_add(&map, "123", "please no err");
-	map_add(&map, "go", "ready");
-	printf("%s\n", map_containsKey(&map, "123")?"true":"false");
-	printf("%s\n", map_get(&map, "123"));
-	printf("%s\n", map_containsKey(&map, "13")?"true":"false");
-	printf("%s\n", map_containsKey(&map, "go")?"true":"false");
-	printf("%s\n", map_get(&map, "go"));
+	HashMap_add(&map, "123", "please no err");
+	HashMap_add(&map, "go", "ready");
+	printf("%s\n", HashMap_containsKey(&map, "123")?"true":"false");
+	printf("%s\n", HashMap_get(&map, "123"));
+	printf("%s\n", HashMap_containsKey(&map, "13")?"true":"false");
+	printf("%s\n", HashMap_containsKey(&map, "go")?"true":"false");
+	printf("%s\n", HashMap_get(&map, "go"));
+
+	printf("Remove 123\n");
+	HashMap_remove(&map, "123");
+	printf("%s\n", HashMap_containsKey(&map, "123")?"true":"false");
+	printf("%s\n", HashMap_get(&map, "123"));
 	return 0;
 }
