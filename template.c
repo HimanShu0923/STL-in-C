@@ -117,6 +117,21 @@ typedef struct
     int len;
 } ArrayList;
 
+int ArrayList_upper(ll *arr, ll val, int s, int e)
+{
+    while (s <= e)
+    {
+        int mid = (s + e) / 2;
+        if (arr[mid] == val)
+            return mid;
+        if (arr[mid] > val)
+            e = mid - 1;
+        else
+            s = mid + 1;
+    }
+    return e + 1;
+}
+
 ll ArrayList_sort(ArrayList *arr, int s, int e)
 {
     if (s >= e)
@@ -482,38 +497,39 @@ ll Stack_peek(Stack *stack)
 }
 
 //__________________________Header_minPriorityQueue____________________//
+
 typedef struct{
 	ll* arr;	
 	int size;
-}minPriorityQueue;
+}PriorityQueue;
 
-minPriorityQueue new_minPriorityQueue(){
-	minPriorityQueue pq;
+PriorityQueue new_PriorityQueue(){
+	PriorityQueue pq;
 	pq.arr = (ll*)malloc(maxn * sizeof(ll*));
 	pq.size = 0;
 	return pq;
 }
 
-void min_pq_up(minPriorityQueue *pq, int pos){
+void pq_up(PriorityQueue *pq, int pos){
 	if(pos==0 || pq->arr[pos]>pq->arr[pos/2]){
 		return ;
 	}
 	ll temp = pq->arr[pos/2];
 	pq->arr[pos/2] = pq->arr[pos];
 	pq->arr[pos] = temp;
-	min_pq_up(pq, pos/2);
+	pq_up(pq, pos/2);
 }
 
-void min_pq_add(minPriorityQueue *pq, ll n){
+void pq_add(PriorityQueue *pq, ll n){
 	pq->arr[pq->size] = n;
-	min_pq_up(pq, pq->size);
+	pq_up(pq, pq->size);
 	pq->size++;
 }
 
-ll min_pq_peek(minPriorityQueue* pq){
+ll pq_peek(PriorityQueue* pq){
 	return pq->arr[0];
 }
-void min_pq_down(minPriorityQueue*pq, int pos){
+void pq_down(PriorityQueue*pq, int pos){
 	int left = pos*2+1;
 	int right = pos*2+2;
 	if(pq->size<left)return ;
@@ -530,23 +546,24 @@ void min_pq_down(minPriorityQueue*pq, int pos){
 		ll temp = pq->arr[left];
 		pq->arr[left] = pq->arr[pos];
 		pq->arr[pos] = temp;
-		min_pq_down(pq, left);
+		pq_down(pq, left);
 	}
 	else{
 		ll temp = pq->arr[right];
 		pq->arr[right] = pq->arr[pos];
 		pq->arr[pos] = temp;
-		min_pq_down(pq, right);
+		pq_down(pq, right);
 	}
 }
 
-ll min_pq_poll(minPriorityQueue* pq){
+ll pq_poll(PriorityQueue* pq){
 	ll res = pq->arr[0];
 	pq->arr[0] = pq->arr[pq->size];
 	pq->size--;
-	min_pq_down(pq, 0);
+	pq_down(pq, 0);
 	return res;
 }
+
 //===========================================================================//
 
 //______________________________maxPriorityQueue______________________________//
@@ -758,15 +775,22 @@ void inorder(struct TreeNode *trav)
 	inorder(trav->r);
 }
 
-void TreeSet_itr(struct TreeNode *trav, ArrayList* arr)
+void TreeSet_itr_helper(struct TreeNode *trav, ArrayList* arr)
 {
 	if (trav == NULL)
 		return;
-	inorder(trav->l);
+	TreeSet_itr_helper(trav->l, arr);
 	ArrayList_add(arr, trav->d);
 	// printf("%d ", trav->d);
-	inorder(trav->r);
+	TreeSet_itr_helper(trav->r, arr);
 }
+
+ArrayList TreeSet_itr(struct TreeNode* trav){
+	ArrayList arr =new_ArrayList();
+	TreeSet_itr_helper(trav, &arr);
+	return arr;
+}
+
 
 void TreeSet_add(struct TreeNode **root, ll val)
 {
@@ -805,33 +829,23 @@ struct TreeNode *new_TreeSet()
 
 int main()
 {
-    int t = nextInt();
-    while (t--)
-    {
-        StringList arr = new_StringList();
-        int n = nextInt();
-        for (int i = 0; i < n; i++)
-        {
-            String(s1) = nextLine();
-            StringList_add(&arr, s1);
-        }
-        for (int i = 0; i < n; i++)
-        {
-            printf("%s ", arr.get(i));
-        }
-        printf("\n");
-        StringList_sort(&arr, 0, n - 1);
-        for (int i = 0; i < n; i++)
-        {
-            printf("%s ", arr.get(i));
-        }
-        printf("\n");
-        StringList_rev(&arr);
-        for (int i = 0; i < n; i++)
-        {
-            printf("%s ", arr.get(i));
-        }
-        printf("\n");
-    }
-    return 0;
+	int n = 7;
+	ll a[7] = {2, 1, 2, 1, 2, 1, 3};
+	TreeSet *root = new_TreeSet();
+	for (int i = 0; i < n; i++)
+	{
+
+		TreeSet_add(&root, a[i]);
+	}
+	printf("size : %d\n", root->size);
+	printf("Inoder Traversal of Created Tree\n");
+	// inorder(root);
+	ArrayList arr = TreeSet_itr(root);
+
+	for(int i=0;i<arr.length;i++){
+		printf("%lld ", arr.get(i));
+	}
+	printf("\n");
+
+	return 0;
 }
