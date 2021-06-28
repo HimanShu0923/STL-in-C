@@ -240,15 +240,22 @@ void inorder(struct TreeNode *trav)
 	inorder(trav->r);
 }
 
-void TreeSet_itr(struct TreeNode *trav, ArrayList* arr)
+void TreeSet_itr_helper(struct TreeNode *trav, ArrayList* arr)
 {
 	if (trav == NULL)
 		return;
-	inorder(trav->l);
+	TreeSet_itr_helper(trav->l, arr);
 	ArrayList_add(arr, trav->d);
 	// printf("%d ", trav->d);
-	inorder(trav->r);
+	TreeSet_itr_helper(trav->r, arr);
 }
+
+ArrayList TreeSet_itr(struct TreeNode* trav){
+	ArrayList arr =new_ArrayList();
+	TreeSet_itr_helper(trav, &arr);
+	return arr;
+}
+
 
 void TreeSet_add(struct TreeNode **root, ll val)
 {
@@ -294,8 +301,7 @@ int main()
 	printf("size : %d\n", root->size);
 	printf("Inoder Traversal of Created Tree\n");
 	// inorder(root);
-	ArrayList arr = new_ArrayList();
-	TreeSet_itr(root, &arr);
+	ArrayList arr = TreeSet_itr(root);
 
 	for(int i=0;i<arr.length;i++){
 		printf("%lld ", arr.get(i));
