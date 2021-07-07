@@ -198,6 +198,14 @@ ArrayList new_ArrayList()
 }
 void ArrayList_pop(ArrayList *arr)
 {
+    // free(&(arr->get[arr->length-1]));
+    arr->length = arr->length - 1;
+}
+void ArrayList_remove(ArrayList *arr, int idx)
+{
+	for(int i=idx;i<arr->length-1;i++){
+		arr->get[i] = arr->get[i+1];
+	}
     arr->length = arr->length - 1;
 }
 void ArrayList_add(ArrayList *arr, int n)
@@ -404,14 +412,14 @@ bool HashMap_containsKey(HashMap *map, char *key){
 char *HashMap_get(HashMap *map, char *key){
 	ll hash_key = hash(key);
 	if(!map->arr[hash_key]){
-		return "";
+		return NULL;
 	}
 	Hentry* temp = map->arr[hash_key];
 	while(temp && temp->key!=key){
 		temp = temp->next;
 	}
 	if(!temp || temp->key!=key){
-		return "";
+		return NULL;
 	}
 	return temp->value;
 }

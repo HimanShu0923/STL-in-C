@@ -2,7 +2,7 @@
 #include<stdlib.h>
 
 
-//...............ArrayList...............segmentation fault................//
+//...............ArrayList...............................//
 #define get(i) get[i]
 
 typedef struct
@@ -39,6 +39,13 @@ void ArrayList_pop(ArrayList *arr)
 {
     arr->length = arr->length - 1;
 }
+void ArrayList_remove(ArrayList *arr, int idx)
+{
+	for(int i=idx;i<arr->length-1;i++){
+		arr->get[i] = arr->get[i+1];
+	}
+    arr->length = arr->length - 1;
+}
 void ArrayList_add(ArrayList *arr, int n)
 {
     if (arr->length + 1 == arr->len)
@@ -56,15 +63,42 @@ int main(){
     printf("size: %d\n", arr.length);
     ArrayList_add(&arr, 1);
     ArrayList_add(&arr, 2);
-    ArrayList_add(&arr2, 3);
-    ArrayList_add(&arr2, 4);
+    ArrayList_add(&arr, 3);
+    ArrayList_add(&arr, 4);
+    // ArrayList_add(&arr2, 3);
+    // ArrayList_add(&arr2, 4);
 
     printf("size: %d\n", arr.length);
     for (int i = 0; i < arr.length; i++)
     {
         printf("arr: %lld", arr.get(i));
-        printf(" arr2: %lld", arr2.get(i));
-    	printf("\n");
+        // printf(" arr2: %lld", arr2.get(i));
+    	// printf("\n");
     }
+    printf("\n");
+    ArrayList_remove(&arr, 2);
+    for (int i = 0; i < arr.length; i++)
+    {
+        printf("arr: %lld", arr.get(i));
+        // printf(" arr2: %lld", arr2.get(i));
+    	// printf("\n");
+    }
+    printf("\n");
+    ArrayList_pop(&arr);
+    for (int i = 0; i < arr.length; i++)
+    {
+        printf("arr: %lld", arr.get(i));
+        // printf(" arr2: %lld", arr2.get(i));
+    	// printf("\n");
+    }
+    printf("\n");
+    ArrayList_add(&arr, 69);
+    for (int i = 0; i < arr.length; i++)
+    {
+        printf("arr: %lld", arr.get(i));
+        // printf(" arr2: %lld", arr2.get(i));
+    	// printf("\n");
+    }
+
     printf("\n");
 }
