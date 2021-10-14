@@ -604,13 +604,13 @@ maxPriorityQueue new_maxPriorityQueue(){
 }
 
 void max_pq_up(maxPriorityQueue *pq, int pos){
-	if(pos==0 || pq->arr[pos]<pq->arr[pos/2]){
+	if(pos==0 || pq->arr[pos]<pq->arr[(pos-1)/2]){
 		return ;
 	}
-	ll temp = pq->arr[pos/2];
-	pq->arr[pos/2] = pq->arr[pos];
+	ll temp = pq->arr[(pos-1)/2];
+	pq->arr[(pos-1)/2] = pq->arr[pos];
 	pq->arr[pos] = temp;
-	max_pq_up(pq, pos/2);
+	max_pq_up(pq, (pos-1)/2);
 }
 
 void max_pq_add(maxPriorityQueue *pq, ll n){
@@ -625,8 +625,8 @@ ll max_pq_peek(maxPriorityQueue* pq){
 void max_pq_down(maxPriorityQueue*pq, int pos){
 	int left = pos*2+1;
 	int right = pos*2+2;
-	if(pq->size<left)return ;
-	if(pq->size<right){
+	if(pq->size<=left)return ;
+	if(pq->size<=right){
 		if(pq->arr[pos]>pq->arr[left]){
 			return ;
 		}
@@ -650,8 +650,11 @@ void max_pq_down(maxPriorityQueue*pq, int pos){
 }
 
 ll max_pq_poll(maxPriorityQueue* pq){
+    if(pq->size==0){
+        return -1;
+    }
 	ll res = pq->arr[0];
-	pq->arr[0] = pq->arr[pq->size];
+	pq->arr[0] = pq->arr[pq->size-1];
 	pq->size--;
 	max_pq_down(pq, 0);
 	return res;
